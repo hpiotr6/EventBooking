@@ -13,6 +13,7 @@ services:
   db:
     image: postgres:13
     volumes:
+      - ./init_scripts:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
