@@ -23,3 +23,9 @@ hasło to: postgres
 ```sh
 docker exec -it eventbooking-web-1 /bin/bash
 ```
+
+## Odpalanie stronki
+http://localhost:8000
+
+## Przydatne komendy:
+docker compose down - usuwa kontenery, ale volume zostaje => baza danych nie zostanie usunięta dopóki nie usuniesz volume'a
