@@ -19,3 +19,7 @@ Przejdz do zakładki Connections
 hasło to: postgres
 
 
+## Wchodzenie do środka kontenera
+```sh
+docker exec -it eventbooking-web-1 /bin/bash
+```
