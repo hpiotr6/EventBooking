@@ -399,13 +399,130 @@ CREATE OR REPLACE VIEW V_User ( user_id
     "user" 
 ;
 
---  ERROR: No Discriminator Column found in Arc FKArc_2 - constraint trigger for Arc cannot be generated 
 
---  ERROR: No Discriminator Column found in Arc FKArc_2 - constraint trigger for Arc cannot be generated
+CREATE OR REPLACE FUNCTION arc_fkarc_2_competitive()
+    RETURNS TRIGGER AS $$
+DECLARE
+    d INTEGER;
+BEGIN
+    SELECT
+        a.event_id
+    INTO d
+    FROM
+        event a
+    WHERE
+        a.event_id = NEW.event_id;
 
---  ERROR: No Discriminator Column found in Arc FKArc_3 - constraint trigger for Arc cannot be generated 
+    IF (d IS NULL OR d <> 'competitive') THEN
+        RAISE EXCEPTION 'FK competitive_Event_FK in Table competitive violates Arc constraint on Table Event - discriminator column event_id doesn''t have value Competitive';
+    END IF;
 
---  ERROR: No Discriminator Column found in Arc FKArc_3 - constraint trigger for Arc cannot be generated
+    RETURN NEW;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER arc_fkarc_2_competitive
+    BEFORE INSERT OR UPDATE OF event_id ON competitive
+    FOR EACH ROW
+    EXECUTE FUNCTION arc_fkarc_2_competitive();
+
+CREATE OR REPLACE FUNCTION arc_fkarc_2_casual()
+    RETURNS TRIGGER AS $$
+DECLARE
+    d INTEGER;
+BEGIN
+    SELECT
+        a.event_id
+    INTO d
+    FROM
+        event a
+    WHERE
+        a.event_id = NEW.event_id;
+
+    IF (d IS NULL OR d <> 'casual') THEN
+        RAISE EXCEPTION 'FK casual_Event_FK in Table casual violates Arc constraint on Table Event - discriminator column event_id doesn''t have value casual';
+    END IF;
+
+    RETURN NEW;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER arc_fkarc_2_casual
+    BEFORE INSERT OR UPDATE OF event_id ON casual
+    FOR EACH ROW
+    EXECUTE FUNCTION arc_fkarc_2_casual();
+
+CREATE OR REPLACE FUNCTION arc_fkarc_3_single()
+    RETURNS TRIGGER AS $$
+DECLARE
+    d INTEGER;
+BEGIN
+    SELECT
+        a.event_id
+    INTO d
+    FROM
+        reservation a
+    WHERE
+        a.event_id = NEW.event_id;
+
+    IF (d IS NULL OR d <> 'single') THEN
+        RAISE EXCEPTION 'FK single_Reservation_FK in Table single violates Arc constraint on Table Reservation - discriminator column event_id doesn''t have value single';
+    END IF;
+
+    RETURN NEW;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER arc_fkarc_3_single
+    BEFORE INSERT OR UPDATE OF event_id ON single
+    FOR EACH ROW
+    EXECUTE FUNCTION arc_fkarc_3_single();
+
+CREATE OR REPLACE FUNCTION arc_fkarc_3_group()
+    RETURNS TRIGGER AS $$
+DECLARE
+    d INTEGER;
+BEGIN
+    SELECT
+        a.event_id
+    INTO d
+    FROM
+        reservation a
+    WHERE
+        a.event_id = NEW.event_id;
+
+    IF (d IS NULL OR d <> 'group') THEN
+        RAISE EXCEPTION 'FK group_Reservation_FK in Table "group" violates Arc constraint on Table Reservation - discriminator column event_id doesn''t have value group';
+    END IF;
+
+    RETURN NEW;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER arc_fkarc_3_group
+    BEFORE INSERT OR UPDATE OF event_id ON "group"
+    FOR EACH ROW
+    EXECUTE FUNCTION arc_fkarc_3_group();
 
 
 
