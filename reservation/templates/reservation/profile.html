@@ -6,14 +6,14 @@
 
 <a href="{% url 'update-user' %}">Update profile</a>
 
-
+<hr>
 <div>
-    <h3> Browse Events</h3>
-    <hr>
+    <h3> Your Events:</h3>
+
 
     {% for event in events %}
     <div>
-        <a>{{event.name}} - {{event.sport_type}} - {{event.city_name}}</a>
+        <li><a>{{event.name}} - {{event.sport_type}} - {{event.city_name}}</a></li>
     </div>
     {% endfor %}
 </div>
