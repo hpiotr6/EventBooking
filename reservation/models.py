@@ -124,6 +124,8 @@ class Event(models.Model):
     city_province = models.CharField(max_length=30)
     periodic_event_periodic_event_id = models.IntegerField(blank=True, null=True)
     periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.CASCADE, blank=True, null=True)
+    date = models.DateField()
+    hour = models.TimeField()
     datetime = models.DateTimeField()
     # date = models.DateField()
 
