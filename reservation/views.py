@@ -152,8 +152,7 @@ def createEvent(request):
         new_event.city_province = new_event.pitch_pitch.facility_facility.city_city.province
         new_event.pitch_capacity = new_event.pitch_pitch.capacity
         new_event.date = post_req["event_date"]
-
-        print(post_req["event_date"])
+        new_event.hour = post_req["hour"]
         
         subclass = None
 
@@ -173,7 +172,5 @@ def createEvent(request):
         new_event.save()
         subclass.save()
 
-
-
-
     return render(request, path, context)
+
