@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30)),
                 ('sport_type', models.CharField(max_length=30)),
                 ('status', models.CharField(max_length=30)),
-                ('calendar_entry_calendar_entry_id', models.IntegerField(unique=True)),
+                # ('calendar_entry_calendar_entry_id', models.IntegerField(unique=True)),
                 ('pitch_capacity', models.IntegerField()),
                 ('city_name', models.CharField(max_length=30)),
                 ('city_province', models.CharField(max_length=30)),

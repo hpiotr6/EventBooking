@@ -2,13 +2,33 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home Page</title>
-</head>
-<body>
-    <nav>
+<style>
+    .home-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+</style>
+
+<div class="home-container">
+
+    <div>
+        <h3> Browse Events</h3>
+        <hr>
+
+        <div>
+            <a href="{% url 'home' %}">All</a>
+        </div>
+
+        {% for event in events %}
+        <div>
+            <a href="{% url 'home' %}?q={{event.sport_type}}">{{event.sport_type}}</a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div>
         <ul>
             <li><a href="/register">Register</a></li>
             <li><a href="/login">Login</a></li>
@@ -16,8 +36,7 @@
             <li><a href="/create_event">Create Event</a></li>
             <li><a href="/join_event">Join Event</a></li>
         </ul>
-    </nav>
-</body>
-</html>
+    </div>
 
+</div>
 {% endblock content %}

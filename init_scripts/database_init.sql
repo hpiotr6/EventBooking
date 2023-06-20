@@ -61,7 +61,7 @@ CREATE TABLE event (
     status                             VARCHAR(30) NOT NULL,
     pitch_pitch_id                     INTEGER NOT NULL, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
-    calendar_entry_calendar_entry_id   INTEGER NOT NULL,
+    -- calendar_entry_calendar_entry_id   INTEGER NOT NULL,
     pitch_capacity                     INTEGER NOT NULL,
     city_name                          VARCHAR(30) NOT NULL,
     city_province                      VARCHAR 
@@ -73,10 +73,10 @@ CREATE TABLE event (
     periodic_eventv1_periodic_event_id INTEGER
 );
 
-CREATE UNIQUE INDEX event__idx ON
-    event (
-        calendar_entry_calendar_entry_id
-    ASC );
+-- CREATE UNIQUE INDEX event__idx ON
+--     event (
+--         calendar_entry_calendar_entry_id
+--     ASC );
 
 ALTER TABLE event ADD CONSTRAINT event_pk PRIMARY KEY ( event_id );
 
@@ -188,7 +188,7 @@ ALTER TABLE sport_gear ADD CONSTRAINT sport_gear_pk PRIMARY KEY ( sport_gear_id 
 
 CREATE TABLE sport_type (
     sport_type_id   INTEGER NOT NULL,
-    sport_type_name CHAR 
+    sport_type_name VARCHAR(100)
 --  WARNING: CHAR size not specified 
      NOT NULL,
     event_event_id  INTEGER
@@ -345,7 +345,7 @@ CREATE OR REPLACE VIEW V_Event ( event_id
    , sport_type
    , status
    , Pitch_pitch_id
-   , Calendar_Entry_calendar_entry_id
+--    , Calendar_Entry_calendar_entry_id
    , Pitch_capacity
    , City_name
    , City_province
@@ -357,7 +357,7 @@ CREATE OR REPLACE VIEW V_Event ( event_id
    , sport_type
    , status
    , Pitch_pitch_id
-   , Calendar_Entry_calendar_entry_id
+--    , Calendar_Entry_calendar_entry_id
    , Pitch_capacity
    , City_name
    , City_province

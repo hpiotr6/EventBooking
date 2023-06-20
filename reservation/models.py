@@ -118,12 +118,12 @@ class Event(models.Model):
     sport_type = models.CharField(max_length=30)
     status = models.CharField(max_length=30)
     pitch_pitch = models.ForeignKey('Pitch', models.DO_NOTHING)
-    calendar_entry_calendar_entry_id = models.IntegerField(unique=True)
+    # calendar_entry_calendar_entry_id = models.IntegerField(unique=True)
     pitch_capacity = models.IntegerField()
     city_name = models.CharField(max_length=30)
     city_province = models.CharField(max_length=30)
     periodic_event_periodic_event_id = models.IntegerField(blank=True, null=True)
-    periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.DO_NOTHING, blank=True, null=True)
+    periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.CASCADE, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User
+from .models import User, Event
 from .forms import UserForm, MyUserCreationForm
 
 # Create your views here.
@@ -23,7 +23,14 @@ def say_hello(request):
     return HttpResponse("Hello World")
 
 def home(request):
-    context = {'rooms': rooms}
+
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+
+    events = Event.objects.filter(sport_type__icontains=q)
+    # events = Event.objects.all()
+
+    context = {'rooms': rooms, "events": events}
+
     return render(request, "reservation/home.html", context)
 
 def room(request, pk):
