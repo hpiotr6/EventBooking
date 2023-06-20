@@ -126,8 +126,7 @@ class Event(models.Model):
     periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.CASCADE, blank=True, null=True)
     date = models.DateField()
     hour = models.TimeField()
-    datetime = models.DateTimeField()
-    # date = models.DateField()
+    # datetime = models.DateTimeField()
 
     class Meta:
         managed = False
@@ -240,8 +239,8 @@ class SportGear(models.Model):
 
 class SportType(models.Model):
     sport_type_id = models.IntegerField(primary_key=True)
-    sport_type_name = models.CharField(max_length=1)
-    event_event = models.ForeignKey(Event, models.DO_NOTHING, blank=True, null=True)
+    sport_type_name = models.CharField(max_length=100)
+    # event_event = models.ForeignKey(Event, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

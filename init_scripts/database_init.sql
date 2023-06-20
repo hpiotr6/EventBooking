@@ -63,9 +63,10 @@ CREATE TABLE event (
     pitch_capacity                     INTEGER NOT NULL,
     city_name                          VARCHAR(30) NOT NULL,
     city_province                      VARCHAR,
-    datetime                           TIMESTAMP NOT NULL
+    date                           DATE NOT NULL,
+    hour                            TIME NOT NULL,
 --  ERROR: VARCHAR size not specified 
-     NOT NULL, 
+    --  NOT NULL, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
     periodic_event_periodic_event_id   INTEGER, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
