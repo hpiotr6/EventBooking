@@ -62,12 +62,12 @@ class User(AbstractUser):
 class Affiliation(models.Model):
     user_user = models.OneToOneField('User', models.DO_NOTHING, primary_key=True)
     team_team = models.ForeignKey('Team', models.DO_NOTHING)
-    team_event_id = models.IntegerField()
+    # team_event_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'affiliation'
-        unique_together = (('user_user', 'team_team', 'team_event_id'),)
+        unique_together = (('user_user', 'team_team'),)
 
 
 class AmenityCategory(models.Model):
@@ -124,6 +124,7 @@ class Event(models.Model):
     city_province = models.CharField(max_length=30)
     periodic_event_periodic_event_id = models.IntegerField(blank=True, null=True)
     periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.CASCADE, blank=True, null=True)
+    datetime = models.DateTimeField()
 
     class Meta:
         managed = False
@@ -163,12 +164,12 @@ class Group(models.Model):
     event = models.ForeignKey('Reservation', models.DO_NOTHING)
     competitive_event = models.ForeignKey(Competitive, models.DO_NOTHING)
     team_team = models.ForeignKey('Team', models.DO_NOTHING)
-    team_event_id = models.IntegerField()
+    # team_event_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'group'
-        unique_together = (('user_id', 'event'), ('competitive_event', 'team_team', 'team_event_id'),)
+        unique_together = (('user_id', 'event'), ('competitive_event', 'team_team'),)
 
 
 class PeriodicEvent(models.Model):
@@ -269,12 +270,11 @@ class StatSportType(models.Model):
 class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
-    event_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'team'
-        unique_together = (('team_id', 'event_id'),)
+        unique_together = (('team_id'),)
 
 
 class WeekDay(models.Model):

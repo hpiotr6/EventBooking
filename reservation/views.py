@@ -7,8 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event, Single, Group, Casual, Competitive
-from .forms import UserForm, MyUserCreationForm
+from .models import User, Event, Single, Group, Casual, Competitive, Team
+from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm
 
 # Create your views here.
 
@@ -106,7 +106,8 @@ def userProfile(request, pk):
 def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
-    context = {"user":user}
+    # user_form = UpdateUserForm(request.POST, instance=request.user)
+    context = {"user":user, "form":form}
 
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES, instance=user)
@@ -116,3 +117,28 @@ def updateUser(request):
 
     return render(request, 'reservation/update-user.html', context)
 
+@login_required(login_url='login')
+def createTeam(request):
+
+    form = TeamCreationForm()
+    context = {'form':form}
+    if request.method == 'POST':
+        form = TeamCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    return render(request, 'reservation/create-team.html', context)
+
+@login_required(login_url='login')
+def joinTeam(request):
+
+    form = AffiliationForm(initial={'user_user': request.user.user_id})
+    context = {'form':form}
+    if request.method == 'POST':
+        form = AffiliationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    return render(request, 'reservation/join-team.html', context)

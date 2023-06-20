@@ -2,22 +2,20 @@
 
 {% block content %}
 
+<h2>Change Profile data</h2>
+
+<ul>
 <div>
     <form method="POST" action="">
         {% csrf_token %}
         <div>
-            <li>Email</li>
+            {{form.as_p}}
+            <!-- <li>Email</li>
             Current Email: {{user.email}}
             <div>
             <label>New email:</label>
             <input type="text" name="email" placeholder="Enter Email" />
-            </div>
-            <li>Date of birth</li>
-            Current Email: {{user.date_of_birth}}
-            <div>
-            <label>New date of birth:</label>
-            <input type="text" name="date_of_birth" placeholder="Enter date of birth" />
-            </div>
+            </div> -->
         </div>
         <div>
             <input type="submit" value="Submit" />
@@ -25,5 +23,5 @@
     </form>
 
 </div>
-
+</ul>
 {% endblock content %}

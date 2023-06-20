@@ -3,7 +3,10 @@
 {% block content %}
 
 <h1>{{user.first_name}} {{user.last_name}}</h1>
-
+<ul>
+<h4>{{user.email}}</h2>
+<h4>{{user.date_of_birth}}</h2>
+</ul>
 <a href="{% url 'update-user' %}">Update profile</a>
 
 <hr>
@@ -13,7 +16,7 @@
 
     {% for event in events %}
     <div>
-        <li><a>{{event.name}} - {{event.sport_type}} - {{event.city_name}}</a></li>
+        <li><a>{{event.name}} - {{event.sport_type}} - {{event.city_name}}  - {{event.datetime}}</a></li>
     </div>
     {% endfor %}
 </div>
