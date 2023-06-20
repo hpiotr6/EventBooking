@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event, Single, Group, Casual, Competitive
+from .models import User, Event, Single, Group, Casual, Competitive, Pitch
 from .forms import UserForm, MyUserCreationForm
 
 # Create your views here.
@@ -116,3 +116,64 @@ def updateUser(request):
 
     return render(request, 'reservation/update-user.html', context)
 
+
+def createEvent(request):
+    path = "reservation/create_event.html"
+
+    context = {}
+
+    pitches = list(Pitch.objects.all())
+
+    print(Pitch.objects.all())
+    
+    pitch_list = []
+
+    for p in pitches:
+        facility = p.facility_facility
+        city = facility.city_city
+        p_type = p.pitch_type_pitch_type
+        l = "{}.{}, {}, {}".format(p_type.name, p.pitch_id, city.name, facility.address)
+        pitch_list.append(l)
+
+    context["pitch_list"] = pitch_list
+
+    print(pitch_list)
+
+    if request.method == "POST":
+        post_req = request.POST.dict()
+        print(post_req)
+
+        new_event = Event()
+        new_event.name = post_req["name"]
+        new_event.sport_type = post_req["sport"]
+        new_event.status = "open"
+        new_event.pitch_pitch = pitches[int(post_req["facility"]) - 1]
+        new_event.city_name = new_event.pitch_pitch.facility_facility.city_city.name
+        new_event.city_province = new_event.pitch_pitch.facility_facility.city_city.province
+        new_event.pitch_capacity = new_event.pitch_pitch.capacity
+        new_event.date = post_req["event_date"]
+
+        print(post_req["event_date"])
+        
+        subclass = None
+
+        if "compet" in post_req.keys():
+            subclass = Competitive()
+            subclass.num_teams = 0
+            subclass.teams_available = post_req["capacity"]
+            subclass.max_num_teams = post_req["capacity"]
+        else:
+            subclass = Casual()
+            subclass.num_users = 0
+            subclass.pitch_capacity = post_req["capacity"]
+            subclass.places_available = post_req["capacity"]
+
+        subclass.event = new_event
+
+        new_event.save()
+        subclass.save()
+
+
+
+
+    return render(request, path, context)
