@@ -125,6 +125,7 @@ class Event(models.Model):
     periodic_event_periodic_event_id = models.IntegerField(blank=True, null=True)
     periodic_eventv1_periodic_event = models.ForeignKey('PeriodicEvent', models.CASCADE, blank=True, null=True)
     datetime = models.DateTimeField()
+    # date = models.DateField()
 
     class Meta:
         managed = False

@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Create Event</h1>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <label for="name">Event name: </label>
+    <input id="name" type="text" name="name"><br>
+    <label for="event_type">Standalone: </label>
+    <input checked id="event_type" type="checkbox" name="event_type"><br>
+
+    <label for="compet">Competetive: </label>
+    <input id="compet" type="checkbox" name="compet"><br>
+
+    <label for="event_date">Date: </label>
+    <input id="event_date" type="date" name="event_date"><br>
+    <label for="end_date">Date: </label>
+    <input id="end_date" type="date" name="end_date"><br>
+
+    <label for="capacity">Number of people: </label>
+    <input id="capacity" type="number" name="capacity"><br>
+    <label for="sport">Sport discipline: </label>
+    <input id="sport" type="text" name="sport"><br>
+    <label for="facility">Event place:</label>
+
+    <select name="facility" id="facility">
+        {% for e in pitch_list %}
+            <option value={{ forloop.counter }}>{{e}}</option>
+        {% endfor %}
+    </select><br>
+
+    <input type="submit" value="Create Event">
+</form>
+
+{% endblock content %}
