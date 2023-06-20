@@ -2,18 +2,22 @@
 
 {% block content %}
 
-<h1>Home Page</h1>
-
-<div>
-
-    <div>
-        {% for room in rooms %}
-        <div>
-            <h5>{{room.id}} -- <a href="{% url 'room' room.id %}">{{room.name}}</a></h5>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/logout">Logout</a></li>
+            <li><a href="/create_event">Create Event</a></li>
+            <li><a href="/join_event">Join Event</a></li>
+        </ul>
+    </nav>
+</body>
+</html>
 
 {% endblock content %}

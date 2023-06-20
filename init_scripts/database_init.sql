@@ -137,11 +137,11 @@ CREATE UNIQUE INDEX periodic_event__idx ON
 
 ALTER TABLE periodic_event ADD CONSTRAINT periodic_event_pk PRIMARY KEY ( periodic_event_id );
 
-CREATE TABLE permission (
-    permission_id SERIAL NOT NULL
-);
+-- CREATE TABLE permission (
+--     permission_id SERIAL NOT NULL
+-- );
 
-ALTER TABLE permission ADD CONSTRAINT permission_pk PRIMARY KEY ( permission_id );
+-- ALTER TABLE permission ADD CONSTRAINT permission_pk PRIMARY KEY ( permission_id );
 
 CREATE TABLE pitch (
     pitch_id                 SERIAL NOT NULL,
@@ -222,11 +222,11 @@ ALTER TABLE team ADD CONSTRAINT team_pk PRIMARY KEY ( team_id,
 CREATE TABLE "user" (
     user_id                  SERIAL NOT NULL,
     password                 VARCHAR(30) NOT NULL,
-    name                     VARCHAR(30) NOT NULL,
-    surname                  VARCHAR(30) NOT NULL,
-    date_of_birth            DATE NOT NULL,
-    email                    VARCHAR(30) NOT NULL,
-    permission_permission_id INTEGER NOT NULL
+    first_name                     VARCHAR(30),
+    last_name                  VARCHAR(30),
+    date_of_birth            DATE,
+    email                    VARCHAR(30) NOT NULL
+    -- permission_permission_id INTEGER NOT NULL
 );
 
 ALTER TABLE "user" ADD CONSTRAINT user_pk PRIMARY KEY ( user_id );
@@ -332,9 +332,9 @@ ALTER TABLE stat_sport_type
     ADD CONSTRAINT stat_sport_type_sport_type_fk FOREIGN KEY ( sport_type_sport_type_id )
         REFERENCES sport_type ( sport_type_id );
 
-ALTER TABLE "user"
-    ADD CONSTRAINT user_permission_fk FOREIGN KEY ( permission_permission_id )
-        REFERENCES permission ( permission_id );
+-- ALTER TABLE "user"
+--     ADD CONSTRAINT user_permission_fk FOREIGN KEY ( permission_permission_id )
+--         REFERENCES permission ( permission_id );
 
 ALTER TABLE week_day
     ADD CONSTRAINT week_day_periodic_event_fkv1 FOREIGN KEY ( periodic_event_periodic_event_id )
@@ -380,24 +380,24 @@ CREATE OR REPLACE VIEW V_Event ( event_id
 --     Stat_User 
 -- ;
 
-CREATE OR REPLACE VIEW V_User ( user_id
-   , password
-   , name
-   , surname
-   , date_of_birth
-   , email
-   , Permission_permission_id )
- AS SELECT
-    user_id
-   , password
-   , name
-   , surname
-   , date_of_birth
-   , email
-   , Permission_permission_id
- FROM 
-    "user" 
-;
+-- CREATE OR REPLACE VIEW V_User ( user_id
+--    , password
+--    , name
+--    , surname
+--    , date_of_birth
+--    , email
+--    , Permission_permission_id )
+--  AS SELECT
+--     user_id
+--    , password
+--    , name
+--    , surname
+--    , date_of_birth
+--    , email
+--    , Permission_permission_id
+--  FROM 
+--     "user" 
+-- ;
 
 
 CREATE OR REPLACE FUNCTION arc_fkarc_2_competitive()
