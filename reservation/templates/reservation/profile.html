@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>{{user.first_name}} {{user.last_name}}</h1>
+
+<a href="{% url 'update-user' %}">Update profile</a>
+
+
+<div>
+    <h3> Browse Events</h3>
+    <hr>
+
+    {% for event in events %}
+    <div>
+        <a>{{event.name}} - {{event.sport_type}} - {{event.city_name}}</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

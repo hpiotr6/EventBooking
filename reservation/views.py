@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event
+from .models import User, Event, Single, Group, Casual, Competitive
 from .forms import UserForm, MyUserCreationForm
 
 # Create your views here.
@@ -27,9 +27,10 @@ def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
 
     events = Event.objects.filter(sport_type__icontains=q)
+    user = request.user
     # events = Event.objects.all()
 
-    context = {'rooms': rooms, "events": events}
+    context = {'rooms': rooms, "events": events, "user": user}
 
     return render(request, "reservation/home.html", context)
 
@@ -86,3 +87,32 @@ def registerPage(request):
             messages.error(request, 'An error occurred during registration')
 
     return render(request, 'reservation/login_register.html', {'form': form})
+
+
+def userProfile(request, pk):
+    user = User.objects.get(user_id=pk)
+    
+    single_events = Single.objects.filter(user_user_id=pk)
+    events = Event.objects.filter(casual__event_id__in=single_events.values_list("event_id"))
+    # events = Event.objects.filter(
+    #     Q(casual__event_id__in=)
+    # )
+    # room_messages = user.message_set.all()
+    # topics = Topic.objects.all()
+    context = {"user":user, "events":events}
+    return render(request, 'reservation/profile.html', context)
+
+@login_required(login_url='login')
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+    context = {"user":user}
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.user_id)
+
+    return render(request, 'reservation/update-user.html', context)
+

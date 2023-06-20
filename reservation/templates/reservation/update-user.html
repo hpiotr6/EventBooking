@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div>
+            <li>Email</li>
+            Current Email: {{user.email}}
+            <div>
+            <label>New email:</label>
+            <input type="text" name="email" placeholder="Enter Email" />
+            </div>
+            <li>Date of birth</li>
+            Current Email: {{user.date_of_birth}}
+            <div>
+            <label>New date of birth:</label>
+            <input type="text" name="date_of_birth" placeholder="Enter date of birth" />
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}
