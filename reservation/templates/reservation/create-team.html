@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2>Team Creation</h2>
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <!-- <div>
+            <li>Team Name</li>
+            <div>
+            <label>Team name:</label> <input type="text" name="name" placeholder="Enter Team name" />
+        </div> -->
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}

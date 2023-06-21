@@ -11,14 +11,12 @@
 
 CREATE TABLE affiliation (
     user_user_id  INTEGER NOT NULL,
-    team_team_id  INTEGER NOT NULL,
-    team_event_id INTEGER NOT NULL
+    team_team_id  INTEGER NOT NULL
 );
 
 ALTER TABLE affiliation
     ADD CONSTRAINT affiliation_pk PRIMARY KEY ( user_user_id,
-                                                team_team_id,
-                                                team_event_id );
+                                                team_team_id );
 
 CREATE TABLE amenity_category (
     amenity_cat_id       SERIAL NOT NULL,
@@ -64,9 +62,11 @@ CREATE TABLE event (
     -- calendar_entry_calendar_entry_id   INTEGER NOT NULL,
     pitch_capacity                     INTEGER NOT NULL,
     city_name                          VARCHAR(30) NOT NULL,
-    city_province                      VARCHAR 
+    city_province                      VARCHAR,
+    date                           DATE NOT NULL,
+    hour                            TIME NOT NULL,
 --  ERROR: VARCHAR size not specified 
-     NOT NULL, 
+    --  NOT NULL, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
     periodic_event_periodic_event_id   INTEGER, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
@@ -111,8 +111,8 @@ CREATE TABLE "group" (
     user_id              INTEGER NOT NULL,
     event_id             INTEGER NOT NULL,
     competitive_event_id INTEGER NOT NULL,
-    team_team_id         INTEGER NOT NULL,
-    team_event_id        INTEGER NOT NULL
+    team_team_id         INTEGER NOT NULL
+    -- team_event_id        INTEGER NOT NULL
 );
 
 ALTER TABLE "group" ADD CONSTRAINT group_pk PRIMARY KEY ( user_id,
@@ -120,8 +120,7 @@ ALTER TABLE "group" ADD CONSTRAINT group_pk PRIMARY KEY ( user_id,
 
 ALTER TABLE "group"
     ADD CONSTRAINT group_pkv1 UNIQUE ( competitive_event_id,
-                                       team_team_id,
-                                       team_event_id );
+                                       team_team_id);
 
 CREATE TABLE periodic_event (
     periodic_event_id      SERIAL NOT NULL,
@@ -212,12 +211,11 @@ CREATE TABLE stat_sport_type (
 
 CREATE TABLE team (
     team_id  SERIAL NOT NULL,
-    name     VARCHAR(20) NOT NULL,
-    event_id INTEGER NOT NULL
+    name     VARCHAR(20) NOT NULL
+    -- event_id INTEGER NOT NULL
 );
 
-ALTER TABLE team ADD CONSTRAINT team_pk PRIMARY KEY ( team_id,
-                                                      event_id );
+ALTER TABLE team ADD CONSTRAINT team_pk PRIMARY KEY ( team_id );
 
 CREATE TABLE "user" (
     user_id                  SERIAL NOT NULL,
@@ -241,10 +239,8 @@ CREATE TABLE week_day (
 ALTER TABLE week_day ADD CONSTRAINT week_day_pk PRIMARY KEY ( week_day_id );
 
 ALTER TABLE affiliation
-    ADD CONSTRAINT affiliation_team_fk FOREIGN KEY ( team_team_id,
-                                                     team_event_id )
-        REFERENCES team ( team_id,
-                          event_id );
+    ADD CONSTRAINT affiliation_team_fk FOREIGN KEY ( team_team_id )
+        REFERENCES team ( team_id );
 
 ALTER TABLE affiliation
     ADD CONSTRAINT affiliation_user_fk FOREIGN KEY ( user_user_id )
@@ -283,10 +279,8 @@ ALTER TABLE "group"
         REFERENCES reservation ( event_id );
 
 ALTER TABLE "group"
-    ADD CONSTRAINT group_team_fk FOREIGN KEY ( team_team_id,
-                                               team_event_id )
-        REFERENCES team ( team_id,
-                          event_id );
+    ADD CONSTRAINT group_team_fk FOREIGN KEY ( team_team_id )
+        REFERENCES team ( team_id );
 
 ALTER TABLE periodic_event
     ADD CONSTRAINT periodic_event_frequency_fk FOREIGN KEY ( frequency_frequency_id )

@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2>Join team</h2>
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <div>
+            <input type="submit" value="Join" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}
