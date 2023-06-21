@@ -21,4 +21,16 @@
     {% endfor %}
 </div>
 
+<hr>
+<div>
+    <h3> Your Teams:</h3>
+
+
+    {% for team in teams %}
+    <div>
+        <li><a>{{team.name}}</a></li>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock content %}

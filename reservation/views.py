@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event, Single, Group, Casual, Competitive, Team, Pitch
+from .models import User, Event, Single, Group, Casual, Competitive, Team, Pitch, Affiliation
 from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm
 
 # Create your views here.
@@ -94,12 +94,14 @@ def userProfile(request, pk):
     
     single_events = Single.objects.filter(user_user_id=pk)
     events = Event.objects.filter(casual__event_id__in=single_events.values_list("event_id"))
+    affiliations = Affiliation.objects.filter(user_user=pk)
+    teams = Team.objects.filter(team_id__in=affiliations.values_list("team_team_id"))
     # events = Event.objects.filter(
     #     Q(casual__event_id__in=)
     # )
     # room_messages = user.message_set.all()
     # topics = Topic.objects.all()
-    context = {"user":user, "events":events}
+    context = {"user":user, "events":events, "teams":teams}
     return render(request, 'reservation/profile.html', context)
 
 @login_required(login_url='login')
@@ -200,3 +202,15 @@ def createEvent(request):
 
     return render(request, path, context)
 
+@login_required(login_url='login')
+def joinEvent(request):
+
+    form = AffiliationForm(initial={'user_user': request.user.user_id})
+    context = {'form':form}
+    if request.method == 'POST':
+        form = AffiliationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    return render(request, 'reservation/join-team.html', context)
