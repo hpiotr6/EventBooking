@@ -193,7 +193,7 @@ class Group(models.Model):
 
 class PeriodicEvent(models.Model):
     periodic_event_id = models.AutoField(primary_key=True)
-    frequency_frequency = models.OneToOneField(Frequency, models.DO_NOTHING)
+    frequency_frequency = models.ForeignKey('Frequency', models.DO_NOTHING)
     start_date = models.DateField()
     end_date = models.DateField()
 

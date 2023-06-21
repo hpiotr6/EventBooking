@@ -98,6 +98,10 @@ CREATE TABLE frequency (
     name         VARCHAR(20) NOT NULL
 );
 
+INSERT INTO frequency (name) VALUES ('weekly');
+INSERT INTO frequency (name) VALUES ('biweekly');
+INSERT INTO frequency (name) VALUES ('monthly');
+
 ALTER TABLE frequency ADD CONSTRAINT frequency_pk PRIMARY KEY ( frequency_id );
 
 CREATE TABLE gear_type (
@@ -129,10 +133,10 @@ CREATE TABLE periodic_event (
     end_date               DATE NOT NULL
 );
 
-CREATE UNIQUE INDEX periodic_event__idx ON
-    periodic_event (
-        frequency_frequency_id
-    ASC );
+-- CREATE UNIQUE INDEX periodic_event__idx ON
+--     periodic_event (
+--         frequency_frequency_id
+--     ASC );
 
 ALTER TABLE periodic_event ADD CONSTRAINT periodic_event_pk PRIMARY KEY ( periodic_event_id );
 

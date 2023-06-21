@@ -7,9 +7,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count, Sum
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event, Single, Group, Casual, Competitive, Pitch, Facility, City, Team, Affiliation, SportType
+from .models import User, Event, Single, Group, Casual, Competitive, Pitch, Facility, City, Team, Affiliation, SportType, Frequency, PeriodicEvent
 from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm, SingleForm
 from collections import Counter
 
@@ -30,6 +30,12 @@ week_days = {
     "fri": "Friday",
     "sat": "Saturday",
     "sun": "Sunday"
+}
+
+offsets = {
+    "1": 0,
+    "2": 7,
+    "3": 21
 }
 
 def say_hello(request):
@@ -189,11 +195,54 @@ def createEvent(request):
     context["pitch_list"] = pitch_list
     context["sport_types"] = sport_types
 
-    try:
-        if request.method == "POST":
-            post_req = request.POST.dict()
-            print(post_req)
 
+    if request.method == "POST":
+        post_req = request.POST.dict()
+        print(post_req)
+
+        dates = []
+        is_cont = "event_type" not in post_req.keys()
+        cont = None
+
+        if is_cont:
+            print(post_req["event_date"], post_req["end_date"])
+
+            vals = []
+
+            for i, k in enumerate(week_days.keys()):
+                if k in post_req.keys():
+                    vals.append(i)
+
+            start_date = datetime.strptime(post_req["event_date"], "%Y-%m-%d")
+            end_date = datetime.strptime(post_req["end_date"], "%Y-%m-%d")
+
+            curr_date = start_date
+            off = offsets[post_req["frequency"]]
+
+            print(vals, off, curr_date <= end_date)
+            print(curr_date.weekday())
+            while curr_date <= end_date:
+                
+                if curr_date.weekday() in vals:
+                    dates.append(curr_date)
+                if curr_date.weekday() == 6:
+                    curr_date += timedelta(days=off)
+                
+
+                curr_date += timedelta(days=1)
+            
+            cont = PeriodicEvent()
+            cont.start_date = post_req["event_date"]
+            cont.end_date = post_req["end_date"]
+            cont.frequency_frequency = Frequency.objects.get(pk=int(post_req["frequency"]))
+            cont.save()
+        else:
+            dates.append(post_req["event_date"])
+        
+        print(dates)
+
+
+        for d in dates:
             new_event = Event()
             new_event.name = post_req["name"]
             sport_type_obj = SportType.objects.get_or_create(sport_type_name=post_req["sport"])[0]
@@ -203,9 +252,12 @@ def createEvent(request):
             new_event.city_name = new_event.pitch_pitch.facility_facility.city_city.name
             new_event.city_province = new_event.pitch_pitch.facility_facility.city_city.province
             new_event.pitch_capacity = new_event.pitch_pitch.capacity
-            new_event.date = post_req["event_date"]
+            new_event.date = d
             new_event.hour = post_req["hour"]
-            
+
+            if cont:
+                new_event.periodic_eventv1_periodic_event = cont
+
             subclass = None
 
             if "compet" in post_req.keys():
@@ -215,7 +267,7 @@ def createEvent(request):
                 subclass.max_num_teams = post_req["capacity"]
             else:
                 subclass = Casual()
-                subclass.num_users = post_req["capacity"]
+                subclass.num_users = 0
                 subclass.pitch_capacity = post_req["capacity"]
                 subclass.places_available = post_req["capacity"]
 
@@ -223,8 +275,10 @@ def createEvent(request):
 
             new_event.save()
             subclass.save()
-    except:
-        messages.error(request, 'Bad input data in one or more fields')
+                
+    # except Exception as e:
+    #     print(e)
+    #     messages.error(request, 'Bad input data in one or more fields')
 
     return render(request, path, context)
 
@@ -253,8 +307,6 @@ def joinEvent(request, pk):
 def stats(request):
     context = {}
 
-
-
     city_names = Event.objects.values_list('city_name', flat=True)
     city_counts = Counter(city_names)
     tcp = min(5, len(city_names))
@@ -276,14 +328,15 @@ def stats(request):
     context["facilities"] = top_facilities
 
     #sports
-    unique_sport_types = Event.objects.values_list('sport_type', flat=True).distinct()
-
+    # unique_sport_types = Event.objects.values_list('sport_type').distinct()
+    unique_sport_types = SportType.objects.values_list('sport_type_name', flat=True).distinct()
     sums_list = []
 
     for sport_type in unique_sport_types:
-        casual_sum = Casual.objects.filter(event__sport_type=sport_type).aggregate(sum_users=Sum('num_users'))['sum_users']
-        competitive_sum = Competitive.objects.filter(event__sport_type=sport_type).aggregate(sum_teams=Sum('num_teams'))['sum_teams']
-        total_sum = int(casual_sum or 0) + int(competitive_sum or 0)
+        casual_sum = Casual.objects.filter(event__sport_type_sport_type__sport_type_name=sport_type).aggregate(total_num_users=Sum('num_users'))
+        competitive_sum = Competitive.objects.filter(event__sport_type_sport_type__sport_type_name=sport_type).aggregate(sum_teams=Sum('num_teams'))
+        print(casual_sum, competitive_sum)
+        total_sum = int(casual_sum["total_num_users"] or 0) + int(competitive_sum["sum_teams"] or 0)
 
         if total_sum:
             sums_list.append((sport_type, total_sum))
