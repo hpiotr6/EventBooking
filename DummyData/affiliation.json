@@ -1,0 +1,24 @@
+{
+    "type": "array",
+    "length": {
+        "type": "number",
+        "constant": 1
+    },
+    "content": {
+        "type": "object",
+        "amenity_cat_id": {
+            "type": "number",
+            "id": {}
+        },
+        "facility_facility_id": {
+            "type": "number",
+            "id": {}
+        },
+        "name": {
+            "type": "string",
+            "faker": {
+                "generator": "first_name"
+            }
+        }
+    }
+}

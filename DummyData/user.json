@@ -1,0 +1,45 @@
+{
+    "type": "array",
+    "length": {
+        "type": "number",
+        "constant": 1
+    },
+    "content": {
+        "type": "object",
+        "user_id": {
+            "type": "number",
+            "id": {}
+        },
+        "password": {
+            "type": "string",
+            "faker": {
+                "generator": "buzzword"
+            }
+        },
+        "first_name": {
+            "type": "string",
+            "faker": {
+                "generator": "first_name"
+            }
+        },
+        "last_name": {
+            "type": "string",
+            "faker": {
+                "generator": "last_name"
+            }
+        },
+        "date_of_birth": {
+            "type": "date_time",
+            "format": "%Y-%m-%d",
+            "subtype": "naive_date",
+            "begin": "1950-01-01",
+            "end": "2023-01-01"
+        },
+        "email": {
+            "type": "string",
+            "faker": {
+                "generator": "safe_email"
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "type": "array",
+    "length": {
+        "type": "number",
+        "constant": 1
+    },
+    "content": {
+        "type": "object",
+        "event_id": {
+            "type": "number",
+            "id": {}
+        },
+        "num_users": {
+            "type": "number",
+            "id": {}
+        },
+        "pitch_capacity": {
+            "type": "number",
+            "id": {}
+        },
+        "places_available": {
+            "type": "number",
+            "id": {}
+        }
+    }
+}
