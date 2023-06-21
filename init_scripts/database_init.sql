@@ -10,13 +10,13 @@
 -- predefined type, no DDL - XMLTYPE
 
 CREATE TABLE affiliation (
+    affiliation_id  SERIAL NOT NULL,
     user_user_id  INTEGER NOT NULL,
     team_team_id  INTEGER NOT NULL
 );
 
 ALTER TABLE affiliation
-    ADD CONSTRAINT affiliation_pk PRIMARY KEY ( user_user_id,
-                                                team_team_id );
+    ADD CONSTRAINT affiliation_pk PRIMARY KEY ( affiliation_id );
 
 CREATE TABLE amenity_category (
     amenity_cat_id       SERIAL NOT NULL,
@@ -55,7 +55,7 @@ ALTER TABLE competitive ADD CONSTRAINT competitive_pk PRIMARY KEY ( event_id );
 CREATE TABLE event (
     event_id                           SERIAL NOT NULL,
     name                               VARCHAR(30) NOT NULL,
-    sport_type                         VARCHAR(30) NOT NULL,
+    sport_type_sport_type_id                       INTEGER NOT NULL,
     status                             VARCHAR(30) NOT NULL,
     pitch_pitch_id                     INTEGER NOT NULL, 
 --  ERROR: Column name length exceeds maximum allowed length(30) 
@@ -266,6 +266,10 @@ ALTER TABLE event
     ADD CONSTRAINT event_pitch_fk FOREIGN KEY ( pitch_pitch_id )
         REFERENCES pitch ( pitch_id );
 
+ALTER TABLE event
+    ADD CONSTRAINT event_sport_type_fk FOREIGN KEY ( sport_type_sport_type_id )
+        REFERENCES sport_type ( sport_type_id );
+
 ALTER TABLE facility
     ADD CONSTRAINT facility_city_fk FOREIGN KEY ( city_city_id )
         REFERENCES city ( city_id );
@@ -336,7 +340,7 @@ ALTER TABLE week_day
 
 CREATE OR REPLACE VIEW V_Event ( event_id
    , name
-   , sport_type
+   , sport_type_sport_type_id
    , status
    , Pitch_pitch_id
 --    , Calendar_Entry_calendar_entry_id
@@ -348,7 +352,7 @@ CREATE OR REPLACE VIEW V_Event ( event_id
  AS SELECT
     event_id
    , name
-   , sport_type
+   , sport_type_sport_type_id
    , status
    , Pitch_pitch_id
 --    , Calendar_Entry_calendar_entry_id

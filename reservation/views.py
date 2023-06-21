@@ -9,8 +9,8 @@ from django.db.models import Q, Count, Sum
 from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Event, Single, Group, Casual, Competitive, Pitch, Facility, City, Team, Affiliation
-from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm
+from .models import User, Event, Single, Group, Casual, Competitive, Pitch, Facility, City, Team, Affiliation, SportType
+from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm, SingleForm
 from collections import Counter
 
 # Create your views here.
@@ -39,7 +39,8 @@ def home(request):
 
     q = request.GET.get('q') if request.GET.get('q') != None else ''
 
-    events = Event.objects.filter(sport_type__icontains=q)
+    # events = Event.objects.filter(sport_type_sport_type__icontains=q)
+    events = Event.objects.all()
     user = request.user
     # events = Event.objects.all()
 
@@ -105,8 +106,8 @@ def registerPage(request):
 def userProfile(request, pk):
     user = User.objects.get(user_id=pk)
     
-    single_events = Single.objects.filter(user_user_id=pk)
-    events = Event.objects.filter(casual__event_id__in=single_events.values_list("event_id"))
+    single = Single.objects.filter(user_user_id=pk)
+    events = Event.objects.filter(casual__event_id__in=single.values_list("event_id"))
     affiliations = Affiliation.objects.filter(user_user=pk)
     teams = Team.objects.filter(team_id__in=affiliations.values_list("team_team_id"))
     # events = Event.objects.filter(
@@ -147,15 +148,21 @@ def createTeam(request):
 
 @login_required(login_url='login')
 def joinTeam(request):
+    pk = request.user.user_id
+    affiliations = Affiliation.objects.filter(user_user=pk)
+    teams_without_user = Team.objects.exclude(team_id__in=affiliations.values_list("team_team_id"))
 
-    form = AffiliationForm(initial={'user_user': request.user.user_id})
-    context = {'form':form}
     if request.method == 'POST':
-        form = AffiliationForm(request.POST)
+        form = AffiliationForm(request.POST, pk=pk, teams_queryset=teams_without_user)
         if form.is_valid():
-            form.save()
+            affiliation = form.save(commit=False)
+            affiliation.user_user = request.user
+            affiliation.save()
             return redirect('home')
+    else:
+        form = AffiliationForm(pk=pk, teams_queryset=teams_without_user)
 
+    context = {'form': form}
     return render(request, 'reservation/join-team.html', context)
 
 def createEvent(request):
@@ -165,9 +172,12 @@ def createEvent(request):
 
     pitches = list(Pitch.objects.all())
 
+    sport_types = SportType.objects.all()
+
     print(Pitch.objects.all())
     
     pitch_list = []
+
 
     for p in pitches:
         facility = p.facility_facility
@@ -177,6 +187,7 @@ def createEvent(request):
         pitch_list.append(l)
 
     context["pitch_list"] = pitch_list
+    context["sport_types"] = sport_types
 
     try:
         if request.method == "POST":
@@ -185,7 +196,8 @@ def createEvent(request):
 
             new_event = Event()
             new_event.name = post_req["name"]
-            new_event.sport_type = post_req["sport"]
+            sport_type_obj = SportType.objects.get_or_create(sport_type_name=post_req["sport"])[0]
+            new_event.sport_type_sport_type = sport_type_obj
             new_event.status = "open"
             new_event.pitch_pitch = pitches[int(post_req["facility"]) - 1]
             new_event.city_name = new_event.pitch_pitch.facility_facility.city_city.name
@@ -218,16 +230,18 @@ def createEvent(request):
 
 @login_required(login_url='login')
 def joinEvent(request):
+    pk = request.user.user_id
+    user = User.objects.get(user_id=pk)
+    # casual_events = Casual.objects.exclude()
+    events = Event.objects.exclude(casual__event_id=pk)
+    context = {'events':events}
+    # if request.method == 'POST':
+    #     post_req = request.POST.dict()
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('home')
 
-    form = AffiliationForm(initial={'user_user': request.user.user_id})
-    context = {'form':form}
-    if request.method == 'POST':
-        form = AffiliationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-
-    return render(request, 'reservation/join-team.html', context)
+    return render(request, 'reservation/join-event.html', context)
 
 def stats(request):
     context = {}

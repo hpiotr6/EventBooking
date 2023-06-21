@@ -22,9 +22,14 @@
     <label for="capacity">Number of people: </label>
     <input id="capacity" type="number" name="capacity"><br>
     <label for="sport">Sports discipline: </label>
-    <input id="sport" type="text" name="sport"><br>
-    <label for="facility">Event place:</label>
+    <!-- <input id="sport" type="text" name="sport"><br> -->
+    <select name="sport" id="sport">
+        {% for s_p in sport_types %}
+            <option value={{ s_p }}>{{s_p.sport_type_name}}</option>
+        {% endfor %}
+    </select><br>
 
+    <label for="facility">Event place:</label>
     <select name="facility" id="facility">
         {% for e in pitch_list %}
             <option value={{ forloop.counter }}>{{e}}</option>

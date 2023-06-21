@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2>Join Event</h2>
+<div>
+
+    {% for event in events %}
+    <div>
+        <a>{{event.sport_type}}</a>
+    </div>
+    {% endfor %}
+    <!-- <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <div>
+            <input type="submit" value="Join" />
+        </div>
+
+        <select name="facility" id="event">
+            {% for e in pitch_list %}
+                <option value={{ forloop.counter }}>{{e}}</option>
+            {% endfor %}
+        </select><br>
+    </form> -->
+
+</div>
+
+{% endblock content %}

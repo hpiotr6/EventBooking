@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User, Team, Event, Affiliation
+from .models import User, Team, Event, Affiliation, Single
 
 
 
@@ -31,6 +31,13 @@ class TeamCreationForm(ModelForm):
         model = Team
         fields = ['name']
 
+class SingleForm(ModelForm):
+    class Meta:
+        model = Single
+        fields = ['event']
+
+
+
 # class UpdateTeam(forms.ModelForm):
 #     username = forms.CharField(max_length=100,
 #                                required=True,
@@ -44,6 +51,10 @@ class TeamCreationForm(ModelForm):
 
 
 class AffiliationForm(ModelForm):
+    def __init__(self, *args, pk=None, teams_queryset=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['team_team'].queryset = teams_queryset
+
     class Meta:
         model = Affiliation
-        fields = ['user_user', 'team_team']
+        fields = ['team_team']

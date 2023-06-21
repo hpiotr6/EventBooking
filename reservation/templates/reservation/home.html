@@ -22,7 +22,7 @@
 
         {% for event in events %}
         <div>
-            <a href="{% url 'home' %}?q={{event.sport_type}}">{{event.sport_type}}</a>
+            <a href="{% url 'home' %}?q={{event.sport_type_sport_type}}">{{event.sport_type}}</a>
         </div>
         {% endfor %}
     </div>
@@ -31,8 +31,8 @@
     <div>
         <ul>
             <h3><li><a href="/register">Register</a></li></h3>
-            <h3><li><a href="/create_event">Create Event</a></li></h3>
-            <h3><li><a href="/join_event">Join Event</a></li></h3>
+            <h3><li><a href="/create-event">Create Event</a></li></h3>
+            <h3><li><a href="/join-event">Join Event</a></li></h3>
             <h3><li><a href="/create-team">Create Team</a></li></h3>
             <h3><li><a href="/join-team">Join Team</a></li></h3>
             <h3><li><a href="/stats">Statistics</a></li></h3>

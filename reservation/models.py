@@ -60,7 +60,8 @@ class User(AbstractUser):
 
 
 class Affiliation(models.Model):
-    user_user = models.OneToOneField('User', models.DO_NOTHING, primary_key=True)
+    affiliation_id = models.AutoField(primary_key=True)
+    user_user = models.ForeignKey('User', models.DO_NOTHING)
     team_team = models.ForeignKey('Team', models.DO_NOTHING)
     # team_event_id = models.IntegerField()
 
@@ -68,6 +69,8 @@ class Affiliation(models.Model):
         managed = False
         db_table = 'affiliation'
         unique_together = (('user_user', 'team_team'),)
+
+    
 
 
 class AmenityCategory(models.Model):
@@ -79,6 +82,8 @@ class AmenityCategory(models.Model):
         managed = False
         db_table = 'amenity_category'
 
+    def __str__(self):
+        return self.name
 
 class Casual(models.Model):
     event = models.OneToOneField('Event', models.DO_NOTHING, primary_key=True)
@@ -115,7 +120,7 @@ class Competitive(models.Model):
 class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
-    sport_type = models.CharField(max_length=30)
+    sport_type_sport_type = models.ForeignKey("SportType",  models.DO_NOTHING)
     status = models.CharField(max_length=30)
     pitch_pitch = models.ForeignKey('Pitch', models.DO_NOTHING)
     # calendar_entry_calendar_entry_id = models.IntegerField(unique=True)
@@ -131,6 +136,9 @@ class Event(models.Model):
     class Meta:
         managed = False
         db_table = 'event'
+
+    def __str__(self):
+        return f"{self.name} | {str(self.sport_type_sport_type)} | {self.date} {self.hour}"
 
 
 class Facility(models.Model):
@@ -196,6 +204,9 @@ class Pitch(models.Model):
         managed = False
         db_table = 'pitch'
 
+    # def __str__(self):
+    #     return self.pitch_type_pitch_type.name
+
 
 class PitchType(models.Model):
     pitch_type_id = models.AutoField(primary_key=True)
@@ -205,6 +216,8 @@ class PitchType(models.Model):
         managed = False
         db_table = 'pitch_type'
 
+    def __str__(self):
+        return self.name
 
 class Reservation(models.Model):
     event_id = models.IntegerField(primary_key=True)
@@ -236,6 +249,9 @@ class SportGear(models.Model):
         managed = False
         db_table = 'sport_gear'
 
+    def __str__(self):
+        return self.name
+
 
 class SportType(models.Model):
     sport_type_id = models.IntegerField(primary_key=True)
@@ -245,6 +261,9 @@ class SportType(models.Model):
     class Meta:
         managed = False
         db_table = 'sport_type'
+
+    def __str__(self):
+        return self.sport_type_name
 
 
 class StatCity(models.Model):
@@ -278,6 +297,8 @@ class Team(models.Model):
         db_table = 'team'
         unique_together = (('team_id'),)
 
+    def __str__(self):
+        return self.name
 
 class WeekDay(models.Model):
     week_day_id = models.AutoField(primary_key=True)

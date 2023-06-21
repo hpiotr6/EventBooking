@@ -15,6 +15,7 @@ urlpatterns = [
     path('create-team/', views.createTeam, name="create-team"),
     path('join-team/', views.joinTeam, name="join-team"),
     path('update-user', views.updateUser, name="update-user"),
-    path('create_event/', views.createEvent, name="create-event"),
+    path('create-event/', views.createEvent, name="create-event"),
+    path('join-event/', views.joinEvent, name="join-event"),
     path('stats/', views.stats, name="stats")
 ]
