@@ -361,6 +361,135 @@ CREATE OR REPLACE VIEW V_Event ( event_id
     Event 
 ;
 
+-- TRIGGERY -----------------------------------------------------------
+-- FUNCTION: public.decrease_num_teams()
+
+-- DROP FUNCTION IF EXISTS public.decrease_num_teams();
+
+CREATE OR REPLACE FUNCTION public.decrease_num_teams()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.competitive 
+  SET num_teams = num_teams-1
+  WHERE event_id = OLD.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.decrease_num_users()
+
+-- DROP FUNCTION IF EXISTS public.decrease_num_users();
+
+CREATE OR REPLACE FUNCTION public.decrease_num_users()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.casual 
+  SET num_users = num_users-1
+  WHERE event_id = OLD.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.trg_check_end_date()
+
+-- DROP FUNCTION IF EXISTS public.trg_check_end_date();
+
+CREATE OR REPLACE FUNCTION public.trg_check_end_date()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+  IF NEW.end_date <= NEW.start_date THEN
+    RAISE EXCEPTION 'End date must be later than start date';
+  Return NULL;
+  END IF;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.update_num_teams()
+
+-- DROP FUNCTION IF EXISTS public.update_num_teams();
+
+CREATE OR REPLACE FUNCTION public.update_num_teams()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.competitive 
+  SET num_teams = num_teams+1
+  WHERE event_id = NEW.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.update_num_users()
+
+-- DROP FUNCTION IF EXISTS public.update_num_users();
+
+CREATE OR REPLACE FUNCTION public.update_num_users()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.casual 
+  SET num_users = num_users+1
+  WHERE event_id = NEW.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- Trigger: trg_decrease_num_teams
+
+-- DROP TRIGGER IF EXISTS trg_decrease_num_teams ON public.reservation;
+
+CREATE TRIGGER trg_decrease_num_teams
+    AFTER DELETE
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.decrease_num_teams();
+-- Trigger: trg_decrease_num_users
+
+-- DROP TRIGGER IF EXISTS trg_decrease_num_users ON public.reservation;
+
+CREATE TRIGGER trg_decrease_num_users
+    AFTER DELETE
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.decrease_num_users();
+-- Trigger: trg_update_num_teams
+
+-- DROP TRIGGER IF EXISTS trg_update_num_teams ON public.reservation;
+
+CREATE TRIGGER trg_update_num_teams
+    AFTER INSERT
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_num_teams();
+-- Trigger: trg_update_num_users
+
+-- DROP TRIGGER IF EXISTS trg_update_num_users ON public.reservation;
+
+CREATE TRIGGER trg_update_num_users
+    AFTER INSERT
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_num_users();
+
+-- END OF TIRGGERS
 -- --  ERROR: Invalid View V_Stat_User 
 
 -- CREATE OR REPLACE VIEW V_Stat_User ( Year
