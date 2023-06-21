@@ -11,6 +11,7 @@ from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Event, Single, Group, Casual, Competitive, Pitch, Facility, City, Team, Affiliation
 from .forms import UserForm, MyUserCreationForm, TeamCreationForm, AffiliationForm,UpdateUserForm
+from collections import Counter
 
 # Create your views here.
 
@@ -231,11 +232,13 @@ def joinEvent(request):
 def stats(request):
     context = {}
 
-    # city
-    cities = City.objects.annotate(event_count=Count('event__city_name'))
-    sorted_cities = sorted(cities, key=lambda x: x.event_count, reverse=True)
-    tcp = min(5, sorted_cities)
-    top_cities = sorted_cities[:tcp]
+
+
+    city_names = Event.objects.values_list('city_name', flat=True)
+    city_counts = Counter(city_names)
+    tcp = min(5, len(city_names))
+
+    top_cities = city_counts.most_common(tcp)
 
     context["top_cities"] = top_cities
 
