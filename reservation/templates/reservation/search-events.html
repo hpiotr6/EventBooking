@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<form method="GET" action="{% url 'search-event' %}">
+
+
+    <div>
+        <li>Event name: <input type="text" name="event_name" placeholder="Event Name"></li>
+    <br>
+    <li><label for="sport_type">Sports discipline: </label>
+    <select name="sport_type" id="sport_type">
+        <option value=""> --- </option>
+        {% for s_p in sport_types %}
+            <option value={{ s_p }}>{{s_p.sport_type_name}}</option>
+        {% endfor %}
+        
+    </select></li><br>
+
+    <li><label for="city_name">City: </label>
+    <select name="city_name" id="city_name">
+        <option value=""> --- </option>
+        {% for c in cities %}
+            <option value={{ c }}>{{c}}</option>
+        {% endfor %}
+        
+    </select></li><br>
+
+    <button type="submit">Search</button>
+</form>
+
+{% if events %}
+    <ul>
+        {% for event in events %}
+            <!-- <li>{{ event.name }} - {{ event.sport_type_sport_type }} - {{ event.city_name }}</li> -->
+
+            <li><a href="{% url 'join-event' event.event_id %}">{{ event.name }} - {{ event.sport_type_sport_type }} - {{ event.city_name }}</a></li>
+
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No events found.</p>
+{% endif %}
+
+
+{% endblock content %}

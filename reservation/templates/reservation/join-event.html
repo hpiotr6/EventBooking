@@ -5,25 +5,21 @@
 <h2>Join Event</h2>
 <div>
 
-    {% for event in events %}
-    <div>
-        <a>{{event.sport_type}}</a>
-    </div>
-    {% endfor %}
-    <!-- <form method="POST" action="">
-        {% csrf_token %}
-        {{form.as_p}}
-        <div>
-            <input type="submit" value="Join" />
-        </div>
+    <h3> Event info:</h3>
+    <li>Name: {{event.name}}</li>
+    <li>Sport discipline: {{event.sport_type_sport_type}}</li>
+    <li>City: {{event.city_name}}</li>
+    <li>Date: {{event.date}}</li>
+    <li>Time: {{event.hour}}</li>
 
-        <select name="facility" id="event">
-            {% for e in pitch_list %}
-                <option value={{ forloop.counter }}>{{e}}</option>
-            {% endfor %}
-        </select><br>
-    </form> -->
+<form action="" method="post">
+    {% csrf_token %}
+<!-- <form method="GET" action="{% url 'join-event' event.event_id %}"> -->
 
+
+
+    <button type="submit">Join Event</button>
+</form>
 </div>
 
 {% endblock content %}

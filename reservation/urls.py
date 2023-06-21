@@ -16,6 +16,7 @@ urlpatterns = [
     path('join-team/', views.joinTeam, name="join-team"),
     path('update-user', views.updateUser, name="update-user"),
     path('create-event/', views.createEvent, name="create-event"),
-    path('join-event/', views.joinEvent, name="join-event"),
+    path('join-event/<str:pk>/', views.joinEvent, name="join-event"),
+    path('search-event/', views.searchEvents, name="search-event"),
     path('stats/', views.stats, name="stats")
 ]

@@ -38,13 +38,13 @@ def say_hello(request):
 def home(request):
 
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-
-    # events = Event.objects.filter(sport_type_sport_type__icontains=q)
-    events = Event.objects.all()
+    sport_types = SportType.objects.all()
+    events = Event.objects.filter(sport_type_sport_type__sport_type_name__icontains=q)
+    # events = Event.objects.all()
     user = request.user
     # events = Event.objects.all()
 
-    context = {'rooms': rooms, "events": events, "user": user}
+    context = {'rooms': rooms, "events": events, "user": user, "sport_types":sport_types}
 
     return render(request, "reservation/home.html", context)
 
@@ -229,17 +229,24 @@ def createEvent(request):
     return render(request, path, context)
 
 @login_required(login_url='login')
-def joinEvent(request):
-    pk = request.user.user_id
-    user = User.objects.get(user_id=pk)
-    # casual_events = Casual.objects.exclude()
-    events = Event.objects.exclude(casual__event_id=pk)
-    context = {'events':events}
-    # if request.method == 'POST':
-    #     post_req = request.POST.dict()
-    #     if form.is_valid():
-    #         form.save()
-    #         return redirect('home')
+def joinEvent(request, pk):
+    event = Event.objects.get(event_id=pk)
+    casual_event = Casual.objects.get(event__event_id=pk)
+
+    user = User.objects.get(user_id=request.user.user_id)
+    context = {'event':event, 'casual_event':casual_event}
+
+    if request.method == "POST":
+        
+        reservation = Reservation()
+        reservation.event_id = event.event_id
+        reservation.save()
+        single_reservation = Single()
+        single_reservation.casual_event = casual_event
+        single_reservation.event = reservation
+        single_reservation.user_user = user
+        single_reservation.save()
+        return redirect('user-profile', pk=user.user_id)
 
     return render(request, 'reservation/join-event.html', context)
 
@@ -288,3 +295,27 @@ def stats(request):
     context["sport_types"] = top_sport_types
 
     return render(request, 'reservation/stats.html', context)
+
+def searchEvents(request):
+    sport_types = SportType.objects.all()
+    cities = City.objects.all()
+    if request.method == 'GET':
+        sport_type = request.GET.get('sport_type', '')
+        city_name = request.GET.get('city_name', '')
+        event_name = request.GET.get('event_name', '')
+
+
+        # Filter events based on the search parameters
+        # events = Event.objects.filter(Q(city_name__icontains=city_name))
+        events = Event.objects.filter(Q(sport_type_sport_type__sport_type_name__icontains=sport_type) & 
+                                      Q(city_name__icontains=city_name) & 
+                                      Q(name__icontains=event_name))
+        # events = Event.objects.all()
+        context = {
+            'events': events,
+            "sport_types":sport_types,
+            "cities": cities
+        }
+        return render(request, 'reservation/search-events.html', context)
+
+    return render(request, 'reservation/search-events.html')

@@ -95,6 +95,8 @@ class Casual(models.Model):
         managed = False
         db_table = 'casual'
 
+    def __str__(self):
+        return self.event
 
 class City(models.Model):
     city_id = models.AutoField(primary_key=True)
@@ -105,6 +107,9 @@ class City(models.Model):
         managed = False
         db_table = 'city'
 
+
+    def __str__(self):
+        return self.name
 
 class Competitive(models.Model):
     event = models.OneToOneField('Event', models.DO_NOTHING, primary_key=True)
@@ -149,6 +154,10 @@ class Facility(models.Model):
     class Meta:
         managed = False
         db_table = 'facility'
+
+
+    def __str__(self):
+        return f"{self.address}, {self.city_city}"
 
 
 class Frequency(models.Model):
@@ -221,7 +230,7 @@ class PitchType(models.Model):
 
 class Reservation(models.Model):
     event_id = models.IntegerField(primary_key=True)
-    pay_status = models.CharField(max_length=1)
+    pay_status = models.CharField(max_length=1, default='Y', editable=False)
 
     class Meta:
         managed = False

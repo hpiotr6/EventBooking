@@ -202,12 +202,12 @@ CREATE TABLE stat_city (
     city_city_id INTEGER NOT NULL
 );
 
-CREATE TABLE stat_sport_type (
-    year                     INTEGER NOT NULL,
-    month                    INTEGER NOT NULL,
-    quantity                 INTEGER,
-    sport_type_sport_type_id INTEGER NOT NULL
-);
+-- CREATE TABLE stat_sport_type (
+--     year                     INTEGER NOT NULL,
+--     month                    INTEGER NOT NULL,
+--     quantity                 INTEGER,
+--     sport_type_sport_type_id INTEGER NOT NULL
+-- );
 
 CREATE TABLE team (
     team_id  SERIAL NOT NULL,
@@ -326,9 +326,9 @@ ALTER TABLE stat_city
     ADD CONSTRAINT stat_city_city_fk FOREIGN KEY ( city_city_id )
         REFERENCES city ( city_id );
 
-ALTER TABLE stat_sport_type
-    ADD CONSTRAINT stat_sport_type_sport_type_fk FOREIGN KEY ( sport_type_sport_type_id )
-        REFERENCES sport_type ( sport_type_id );
+-- ALTER TABLE stat_sport_type
+--     ADD CONSTRAINT stat_sport_type_sport_type_fk FOREIGN KEY ( sport_type_sport_type_id )
+--         REFERENCES sport_type ( sport_type_id );
 
 -- ALTER TABLE "user"
 --     ADD CONSTRAINT user_permission_fk FOREIGN KEY ( permission_permission_id )
@@ -478,34 +478,34 @@ $BODY$;
 
 -- DROP FUNCTION IF EXISTS public.update_stat_sport_type();
 
-CREATE OR REPLACE FUNCTION public.update_stat_sport_type()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE NOT LEAKPROOF
-AS $BODY$
-DECLARE
-    v_year INT;
-    v_month INT;
-    v_sport_type_id INT;
-	v_date DATE;
-BEGIN
-	-- Retrieve the date from the event table based on the event_id
-    SELECT date
-    INTO v_date
-    FROM event
-    WHERE event_id = NEW.event_event_id;
+-- CREATE OR REPLACE FUNCTION public.update_stat_sport_type()
+--     RETURNS trigger
+--     LANGUAGE 'plpgsql'
+--     COST 100
+--     VOLATILE NOT LEAKPROOF
+-- AS $BODY$
+-- DECLARE
+--     v_year INT;
+--     v_month INT;
+--     v_sport_type_id INT;
+-- 	v_date DATE;
+-- BEGIN
+-- 	-- Retrieve the date from the event table based on the event_id
+--     SELECT date
+--     INTO v_date
+--     FROM event
+--     WHERE event_id = NEW.event_event_id;
 
 	
-    -- Extract year and month from the inserted row's date column
-    v_year := EXTRACT(YEAR FROM v_date);
-    v_month := EXTRACT(MONTH FROM v_date);
-	INSERT INTO stat_sport_type (year,month,quantity, sport_type_sport_type_id)
-    VALUES (v_year, v_month,1, NEW.sport_type_id);
+--     -- Extract year and month from the inserted row's date column
+--     v_year := EXTRACT(YEAR FROM v_date);
+--     v_month := EXTRACT(MONTH FROM v_date);
+-- 	INSERT INTO stat_sport_type (year,month,quantity, sport_type_sport_type_id)
+--     VALUES (v_year, v_month,1, NEW.sport_type_id);
 
-    RETURN NEW;
-END;
-$BODY$;
+--     RETURN NEW;
+-- END;
+-- $BODY$;
 -- Trigger: trg_update_stat_city
 
 -- DROP TRIGGER IF EXISTS trg_update_stat_city ON public.event;
@@ -519,11 +519,11 @@ CREATE TRIGGER trg_update_stat_city
 
 -- DROP TRIGGER IF EXISTS trg_update_stat_sport_type ON public.sport_type;
 
-CREATE TRIGGER trg_update_stat_sport_type
-    AFTER INSERT
-    ON public.sport_type
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_stat_sport_type();
+-- CREATE TRIGGER trg_update_stat_sport_type
+--     AFTER INSERT
+--     ON public.sport_type
+--     FOR EACH ROW
+--     EXECUTE FUNCTION public.update_stat_sport_type();
 -- Table: public.reservation
 
 -- DROP TABLE IF EXISTS public.reservation;

@@ -38,18 +38,6 @@ class SingleForm(ModelForm):
 
 
 
-# class UpdateTeam(forms.ModelForm):
-#     username = forms.CharField(max_length=100,
-#                                required=True,
-#                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-#     email = forms.EmailField(required=True,
-#                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email']
-
-
 class AffiliationForm(ModelForm):
     def __init__(self, *args, pk=None, teams_queryset=None, **kwargs):
         super().__init__(*args, **kwargs)
