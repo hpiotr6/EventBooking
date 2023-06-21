@@ -186,7 +186,7 @@ CREATE TABLE sport_gear (
 ALTER TABLE sport_gear ADD CONSTRAINT sport_gear_pk PRIMARY KEY ( sport_gear_id );
 
 CREATE TABLE sport_type (
-    sport_type_id   INTEGER NOT NULL,
+    sport_type_id   SERIAL NOT NULL,
     sport_type_name VARCHAR(100)
 --  WARNING: CHAR size not specified 
      NOT NULL,

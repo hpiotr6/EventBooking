@@ -215,7 +215,7 @@ def createEvent(request):
                 subclass.max_num_teams = post_req["capacity"]
             else:
                 subclass = Casual()
-                subclass.num_users = 0
+                subclass.num_users = post_req["capacity"]
                 subclass.pitch_capacity = post_req["capacity"]
                 subclass.places_available = post_req["capacity"]
 
@@ -232,9 +232,9 @@ def createEvent(request):
 def joinEvent(request, pk):
     event = Event.objects.get(event_id=pk)
     casual_event = Casual.objects.get(event__event_id=pk)
-
+    single_count = Single.objects.filter(event_id=pk).count()
     user = User.objects.get(user_id=request.user.user_id)
-    context = {'event':event, 'casual_event':casual_event}
+    context = {'event':event, 'casual_event':casual_event, "single_count":single_count}
 
     if request.method == "POST":
         

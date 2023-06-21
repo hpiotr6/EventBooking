@@ -263,7 +263,7 @@ class SportGear(models.Model):
 
 
 class SportType(models.Model):
-    sport_type_id = models.IntegerField(primary_key=True)
+    sport_type_id = models.AutoField(primary_key=True)
     sport_type_name = models.CharField(max_length=100)
     # event_event = models.ForeignKey(Event, models.DO_NOTHING, blank=True, null=True)
 
