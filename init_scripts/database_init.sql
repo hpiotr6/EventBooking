@@ -364,7 +364,222 @@ CREATE OR REPLACE VIEW V_Event ( event_id
  FROM 
     Event 
 ;
+-- TRIGGERY -----------------------------------------------------------
+-- FUNCTION: public.decrease_num_teams()
 
+-- DROP FUNCTION IF EXISTS public.decrease_num_teams();
+
+CREATE OR REPLACE FUNCTION public.decrease_num_teams()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.competitive 
+  SET num_teams = num_teams-1
+  WHERE event_id = OLD.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.decrease_num_users()
+
+-- DROP FUNCTION IF EXISTS public.decrease_num_users();
+
+CREATE OR REPLACE FUNCTION public.decrease_num_users()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.casual 
+  SET num_users = num_users-1
+  WHERE event_id = OLD.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.update_num_teams()
+
+-- DROP FUNCTION IF EXISTS public.update_num_teams();
+
+CREATE OR REPLACE FUNCTION public.update_num_teams()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.competitive 
+  SET num_teams = num_teams+1
+  WHERE event_id = NEW.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.update_num_users()
+
+-- DROP FUNCTION IF EXISTS public.update_num_users();
+
+CREATE OR REPLACE FUNCTION public.update_num_users()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+AS $BODY$
+
+BEGIN
+  -- Count teams in reservation   with correct event_id
+  UPDATE public.casual 
+  SET num_users = num_users+1
+  WHERE event_id = NEW.event_id;
+  RETURN NULL;
+END;
+$BODY$;
+-- FUNCTION: public.update_stat_city()
+
+-- DROP FUNCTION IF EXISTS public.update_stat_city();
+
+CREATE OR REPLACE FUNCTION public.update_stat_city()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+    v_year INT;
+    v_month INT;
+    v_city_id INT;
+BEGIN
+    -- Extract year and month from the inserted row's date column
+    v_year := EXTRACT(YEAR FROM NEW.date);
+    v_month := EXTRACT(MONTH FROM NEW.date);
+
+    -- Retrieve the city_id from the pitch and facility tables based on pitch_pitch_id
+    SELECT public.pitch.facility_facility_id, public.facility.city_city_id
+    INTO v_city_id
+    FROM public.pitch
+    JOIN facility ON public.pitch.facility_facility_id = public.facility.facility_id
+    WHERE public.pitch.pitch_id = NEW.pitch_pitch_id;
+
+    -- Insert the new row into the stat_city table
+    INSERT INTO stat_city (year, month,quantity, city_city_id)
+    VALUES (v_year, v_month,1, v_city_id);
+
+    RETURN NEW;
+END;
+$BODY$;
+-- FUNCTION: public.update_stat_sport_type()
+
+-- DROP FUNCTION IF EXISTS public.update_stat_sport_type();
+
+CREATE OR REPLACE FUNCTION public.update_stat_sport_type()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+    v_year INT;
+    v_month INT;
+    v_sport_type_id INT;
+	v_date DATE;
+BEGIN
+	-- Retrieve the date from the event table based on the event_id
+    SELECT date
+    INTO v_date
+    FROM event
+    WHERE event_id = NEW.event_event_id;
+
+	
+    -- Extract year and month from the inserted row's date column
+    v_year := EXTRACT(YEAR FROM v_date);
+    v_month := EXTRACT(MONTH FROM v_date);
+	INSERT INTO stat_sport_type (year,month,quantity, sport_type_sport_type_id)
+    VALUES (v_year, v_month,1, NEW.sport_type_id);
+
+    RETURN NEW;
+END;
+$BODY$;
+-- Trigger: trg_update_stat_city
+
+-- DROP TRIGGER IF EXISTS trg_update_stat_city ON public.event;
+
+CREATE TRIGGER trg_update_stat_city
+    AFTER INSERT
+    ON public.event
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_stat_city();
+-- Trigger: trg_update_stat_sport_type
+
+-- DROP TRIGGER IF EXISTS trg_update_stat_sport_type ON public.sport_type;
+
+CREATE TRIGGER trg_update_stat_sport_type
+    AFTER INSERT
+    ON public.sport_type
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_stat_sport_type();
+-- Table: public.reservation
+
+-- DROP TABLE IF EXISTS public.reservation;
+
+CREATE TABLE IF NOT EXISTS public.reservation
+(
+    event_id integer NOT NULL,
+    pay_status character(1) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT reservation_pk PRIMARY KEY (event_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.reservation
+    OWNER to postgres;
+
+-- Trigger: trg_decrease_num_teams
+
+-- DROP TRIGGER IF EXISTS trg_decrease_num_teams ON public.reservation;
+
+CREATE TRIGGER trg_decrease_num_teams
+    AFTER DELETE
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.decrease_num_teams();
+
+-- Trigger: trg_decrease_num_users
+
+-- DROP TRIGGER IF EXISTS trg_decrease_num_users ON public.reservation;
+
+CREATE TRIGGER trg_decrease_num_users
+    AFTER DELETE
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.decrease_num_users();
+
+-- Trigger: trg_update_num_teams
+
+-- DROP TRIGGER IF EXISTS trg_update_num_teams ON public.reservation;
+
+CREATE TRIGGER trg_update_num_teams
+    AFTER INSERT
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_num_teams();
+
+-- Trigger: trg_update_num_users
+
+-- DROP TRIGGER IF EXISTS trg_update_num_users ON public.reservation;
+
+CREATE TRIGGER trg_update_num_users
+    AFTER INSERT
+    ON public.reservation
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_num_users();
+-- END OF TIRGGERS
 -- --  ERROR: Invalid View V_Stat_User 
 
 -- CREATE OR REPLACE VIEW V_Stat_User ( Year
