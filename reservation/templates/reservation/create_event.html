@@ -18,12 +18,10 @@
     <input id="hour" type="time" name="hour"><br>
     <label for="event_date">Date: </label>
     <input id="event_date" type="date" name="event_date"><br>
-    <label for="end_date">End date (only for periodic events): </label>
-    <input id="end_date" type="date" name="end_date"><br>
 
     <label for="capacity">Number of people: </label>
     <input id="capacity" type="number" name="capacity"><br>
-    <label for="sport">Sport discipline: </label>
+    <label for="sport">Sports discipline: </label>
     <input id="sport" type="text" name="sport"><br>
     <label for="facility">Event place:</label>
 
@@ -33,6 +31,26 @@
         {% endfor %}
     </select><br>
 
+    <h2>Only for periodic events</h2>
+    <label for="end_date">End date: </label>
+    <input id="end_date" type="date" name="end_date"><br>
+
+    <fieldset>
+        <legend>Weekdays</legend>
+        {% for k, v in week_days.items %}
+        <input type="radio"  name={{k}}  id={{k}}
+        value={{v}} />
+           <label for={{k}}>{{v}}</label>
+        {% endfor %}
+    </fieldset>
+
+    <label for="frequency">Frequency: </label>
+    <select name="frequency" id="frequency">
+
+        <option value="1">weekly</option>
+        <option value="2">biweekly</option>
+        <option value="3">monthly</option>
+    </select><br>
     <input type="submit" value="Create Event">
 </form>
 
