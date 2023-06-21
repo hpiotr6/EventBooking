@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Statistics</h1>
+
+<h2>Top monthly cities</h2>
+    {% for t in top_cities %}
+        <ol>{{forloop.counter}}) {{t.name}} - {{t.event_count}} events</ol><br>
+    {% endfor %}
+<ol>1) Warsaw - 60 events</ol>
+<ol>2) Toruń - 35 events</ol>
+<ol>3) Wrocław - 23 events</ol>
+<ol>4) Poznań - 15 events</ol>
+<ol>5) Gdańsk - 10 events</ol>
+<h2>Top monthly facilities</h2>
+    {% for f in facilities %}
+        <ol>{{forloop.counter}}) {{f.city_city.name}}, {{f.address}} - {{f.event_count}} events</ol><br>
+    {% endfor %}
+
+<h2>Top monthly sports</h2>
+    {% for a, b in sport_types %}
+        <ol>{{forloop.counter}}) {{a}} - {{b}} participants</ol>
+    {% endfor %}
+{% endblock content %}
