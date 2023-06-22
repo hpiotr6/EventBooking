@@ -4,7 +4,7 @@ from .models import Reservation
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.db.models import Q, Count, Sum
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -171,6 +171,7 @@ def joinTeam(request):
     context = {'form': form}
     return render(request, 'reservation/join-team.html', context)
 
+@login_required(login_url='login')
 def createEvent(request):
     path = "reservation/create_event.html"
 
@@ -267,7 +268,7 @@ def createEvent(request):
                 subclass.max_num_teams = post_req["capacity"]
             else:
                 subclass = Casual()
-                subclass.num_users = 0
+                subclass.num_users = post_req["capacity"]
                 subclass.pitch_capacity = post_req["capacity"]
                 subclass.places_available = post_req["capacity"]
 
@@ -304,6 +305,7 @@ def joinEvent(request, pk):
 
     return render(request, 'reservation/join-event.html', context)
 
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
 def stats(request):
     context = {}
 
@@ -333,10 +335,13 @@ def stats(request):
     sums_list = []
 
     for sport_type in unique_sport_types:
-        casual_sum = Casual.objects.filter(event__sport_type_sport_type__sport_type_name=sport_type).aggregate(total_num_users=Sum('num_users'))
+        single_count = Single.objects.filter(casual_event__event__sport_type_sport_type__sport_type_name=sport_type).count()
+        casual_sum = single_count
+        # casual_sum = Casual.objects.filter(event__sport_type_sport_type__sport_type_name=sport_type).aggregate(total_num_users=Sum('num_users'))
+        
         competitive_sum = Competitive.objects.filter(event__sport_type_sport_type__sport_type_name=sport_type).aggregate(sum_teams=Sum('num_teams'))
         print(casual_sum, competitive_sum)
-        total_sum = int(casual_sum["total_num_users"] or 0) + int(competitive_sum["sum_teams"] or 0)
+        total_sum = single_count + int(competitive_sum["sum_teams"] or 0)
 
         if total_sum:
             sums_list.append((sport_type, total_sum))

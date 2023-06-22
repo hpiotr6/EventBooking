@@ -34,7 +34,7 @@
         {% for event in events %}
             <!-- <li>{{ event.name }} - {{ event.sport_type_sport_type }} - {{ event.city_name }}</li> -->
 
-            <li><a href="{% url 'join-event' event.event_id %}">{{ event.name }} - {{ event.sport_type_sport_type }} - {{ event.city_name }}</a></li>
+            <li><a href="{% url 'join-event' event.event_id %}">{{event.date}} - {{ event.name }} - {{ event.sport_type_sport_type }} - {{ event.city_name }}</a></li>
 
         {% endfor %}
     </ul>

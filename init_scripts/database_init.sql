@@ -86,10 +86,10 @@ CREATE TABLE facility (
     city_city_id INTEGER NOT NULL
 );
 
-CREATE UNIQUE INDEX facility__idx ON
-    facility (
-        city_city_id
-    ASC );
+-- CREATE UNIQUE INDEX facility__idx ON
+--     facility (
+--         city_city_id
+--     ASC );
 
 ALTER TABLE facility ADD CONSTRAINT facility_pk PRIMARY KEY ( facility_id );
 
@@ -199,12 +199,12 @@ CREATE TABLE sport_type (
 
 ALTER TABLE sport_type ADD CONSTRAINT pitch_typev1_pk PRIMARY KEY ( sport_type_id );
 
-CREATE TABLE stat_city (
-    year         INTEGER NOT NULL,
-    month        INTEGER NOT NULL,
-    quantity     INTEGER NOT NULL,
-    city_city_id INTEGER NOT NULL
-);
+-- CREATE TABLE stat_city (
+--     year         INTEGER NOT NULL,
+--     month        INTEGER NOT NULL,
+--     quantity     INTEGER NOT NULL,
+--     city_city_id INTEGER NOT NULL
+-- );
 
 -- CREATE TABLE stat_sport_type (
 --     year                     INTEGER NOT NULL,
@@ -326,9 +326,9 @@ ALTER TABLE sport_type
     ADD CONSTRAINT sport_type_event_fk FOREIGN KEY ( event_event_id )
         REFERENCES event ( event_id );
 
-ALTER TABLE stat_city
-    ADD CONSTRAINT stat_city_city_fk FOREIGN KEY ( city_city_id )
-        REFERENCES city ( city_id );
+-- ALTER TABLE stat_city
+--     ADD CONSTRAINT stat_city_city_fk FOREIGN KEY ( city_city_id )
+--         REFERENCES city ( city_id );
 
 -- ALTER TABLE stat_sport_type
 --     ADD CONSTRAINT stat_sport_type_sport_type_fk FOREIGN KEY ( sport_type_sport_type_id )
@@ -430,54 +430,54 @@ $BODY$;
 
 -- DROP FUNCTION IF EXISTS public.update_num_users();
 
-CREATE OR REPLACE FUNCTION public.update_num_users()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
-AS $BODY$
+-- CREATE OR REPLACE FUNCTION public.update_num_users()
+--     RETURNS trigger
+--     LANGUAGE 'plpgsql'
+--     COST 100
+--     VOLATILE NOT LEAKPROOF STRICT SECURITY DEFINER
+-- AS $BODY$
 
-BEGIN
-  -- Count teams in reservation   with correct event_id
-  UPDATE public.casual 
-  SET num_users = num_users+1
-  WHERE event_id = NEW.event_id;
-  RETURN NULL;
-END;
-$BODY$;
--- FUNCTION: public.update_stat_city()
+-- BEGIN
+--   -- Count teams in reservation   with correct event_id
+--   UPDATE public.casual 
+--   SET num_users = num_users+1
+--   WHERE event_id = NEW.event_id;
+--   RETURN NULL;
+-- END;
+-- $BODY$;
+-- -- FUNCTION: public.update_stat_city()
 
--- DROP FUNCTION IF EXISTS public.update_stat_city();
+-- -- DROP FUNCTION IF EXISTS public.update_stat_city();
 
-CREATE OR REPLACE FUNCTION public.update_stat_city()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE NOT LEAKPROOF
-AS $BODY$
-DECLARE
-    v_year INT;
-    v_month INT;
-    v_city_id INT;
-BEGIN
-    -- Extract year and month from the inserted row's date column
-    v_year := EXTRACT(YEAR FROM NEW.date);
-    v_month := EXTRACT(MONTH FROM NEW.date);
+-- CREATE OR REPLACE FUNCTION public.update_stat_city()
+--     RETURNS trigger
+--     LANGUAGE 'plpgsql'
+--     COST 100
+--     VOLATILE NOT LEAKPROOF
+-- AS $BODY$
+-- DECLARE
+--     v_year INT;
+--     v_month INT;
+--     v_city_id INT;
+-- BEGIN
+--     -- Extract year and month from the inserted row's date column
+--     v_year := EXTRACT(YEAR FROM NEW.date);
+--     v_month := EXTRACT(MONTH FROM NEW.date);
 
-    -- Retrieve the city_id from the pitch and facility tables based on pitch_pitch_id
-    SELECT public.pitch.facility_facility_id, public.facility.city_city_id
-    INTO v_city_id
-    FROM public.pitch
-    JOIN facility ON public.pitch.facility_facility_id = public.facility.facility_id
-    WHERE public.pitch.pitch_id = NEW.pitch_pitch_id;
+--     -- Retrieve the city_id from the pitch and facility tables based on pitch_pitch_id
+--     SELECT public.pitch.facility_facility_id, public.facility.city_city_id
+--     INTO v_city_id
+--     FROM public.pitch
+--     JOIN facility ON public.pitch.facility_facility_id = public.facility.facility_id
+--     WHERE public.pitch.pitch_id = NEW.pitch_pitch_id;
 
-    -- Insert the new row into the stat_city table
-    INSERT INTO stat_city (year, month,quantity, city_city_id)
-    VALUES (v_year, v_month,1, v_city_id);
+--     -- Insert the new row into the stat_city table
+--     INSERT INTO stat_city (year, month,quantity, city_city_id)
+--     VALUES (v_year, v_month,1, v_city_id);
 
-    RETURN NEW;
-END;
-$BODY$;
+--     RETURN NEW;
+-- END;
+-- $BODY$;
 -- FUNCTION: public.update_stat_sport_type()
 
 -- DROP FUNCTION IF EXISTS public.update_stat_sport_type();
@@ -514,11 +514,11 @@ $BODY$;
 
 -- DROP TRIGGER IF EXISTS trg_update_stat_city ON public.event;
 
-CREATE TRIGGER trg_update_stat_city
-    AFTER INSERT
-    ON public.event
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_stat_city();
+-- CREATE TRIGGER trg_update_stat_city
+--     AFTER INSERT
+--     ON public.event
+--     FOR EACH ROW
+--     EXECUTE FUNCTION public.update_stat_city();
 -- Trigger: trg_update_stat_sport_type
 
 -- DROP TRIGGER IF EXISTS trg_update_stat_sport_type ON public.sport_type;
@@ -578,11 +578,11 @@ CREATE TRIGGER trg_update_num_teams
 
 -- DROP TRIGGER IF EXISTS trg_update_num_users ON public.reservation;
 
-CREATE TRIGGER trg_update_num_users
-    AFTER INSERT
-    ON public.reservation
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_num_users();
+-- CREATE TRIGGER trg_update_num_users
+--     AFTER INSERT
+--     ON public.reservation
+--     FOR EACH ROW
+--     EXECUTE FUNCTION public.update_num_users();
 -- END OF TIRGGERS
 -- --  ERROR: Invalid View V_Stat_User 
 

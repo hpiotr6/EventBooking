@@ -149,7 +149,7 @@ class Event(models.Model):
 class Facility(models.Model):
     facility_id = models.AutoField(primary_key=True)
     address = models.CharField(max_length=20)
-    city_city = models.OneToOneField(City, models.DO_NOTHING)
+    city_city = models.ForeignKey("City", models.DO_NOTHING)
 
     class Meta:
         managed = False

@@ -22,7 +22,7 @@
 
         {% for sport_type in sport_types %}
         <div>
-            <a href="{% url 'home' %}?q={{event.sport_type_sport_type}}">{{sport_type.sport_type_name}}</a>
+            <a href="{% url 'search-event' %}?q=?event_name=&sport_type={{sport_type.sport_type_name}}&city_name=">{{sport_type.sport_type_name}}</a>
         </div>
         {% endfor %}
     </div>
